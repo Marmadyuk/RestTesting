@@ -1,12 +1,8 @@
 @regresssuite
 Feature: createCustomer
 
-  Background:
-    Given mocked environment
-
   @positive
   Scenario: Server is receiving response to createCustomer with all attributes
-#    Given a customer with id 1 is exist
     When Server is receiving request to createCustomer
       | id | lastName | firstName | age | isActive | dateOfBirth |
       | 1  | Capaldi  | Peter     | 4   | false    | 2012-05-31  |
