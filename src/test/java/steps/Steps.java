@@ -8,27 +8,29 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
 
+import java.util.List;
+
 
 public class Steps {
     RequestSpecification request = RestAssured.given();
 
     @When("^Server is receiving request to createCustomer$")
-    public void serverIsReceivingRequestToCreateCustomer(DataTable arg1) throws Throwable {
-        request.baseUri("http://localhost:8080/rest/api");
+    public void serverIsReceivingRequestToCreateCustomer(DataTable customerParameters) throws Throwable {
+        List<List<String>> data = customerParameters.raw();
 
+        request.baseUri("http://localhost:8080/rest/api");
         String value = new JsonBuilder()
-                .add("id", "1")
-                .add("first_name", "John")
-                .add("last_name", "Smith")
-//                .add("age", "25")
-//                .add("address", new JsonBuilder()
-//                        .add("streetAddress", "21 2nd Street")
-//                        .add("city", "New York")
-//                        .add("state", "NY")
-//                        .add("postalCode", "10021"))
+                .add("id", ""+data.get(1).get(0)+"")
+                .add("first_name", ""+data.get(1).get(1)+"")
+                .add("last_name", ""+data.get(1).get(2)+"")
+                .add("properties", new JsonBuilder()
+                        .add("age", ""+data.get(1).get(3)+"")
+                        .add("active", ""+data.get(1).get(4)+"")
+                        .add("date_of_birth", ""+data.get(1).get(5)+""))
                 .toJson();
 
         request.body(value);
+        System.out.println("zzzzzz  " +value);
         request.header("Content-Type", "application/json");
 
         Response response = request.post("/customer");
