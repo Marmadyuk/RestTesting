@@ -40,7 +40,8 @@ public class MockController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
         if (!valid(customer)) {
-            return  ResponseEntity.status(401).body("mandatory fields are blank or have invalid format");
+            return  ResponseEntity.status(400)
+                    .body("mandatory fields are blank or have invalid format");
         } else {
             mockEngine.createCustomer(customer);
             return ResponseEntity.status(201)

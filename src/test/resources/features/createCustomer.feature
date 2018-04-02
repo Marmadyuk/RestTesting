@@ -21,15 +21,15 @@ Feature: createCustomer
       | 3  | Whittaker | Jodie     |     |        |             | 200    |
 
     Then service is returning response with code 201 and status message "successfully created"
-#
-#  @negative
-#  Scenario: Server is receiving response to createCustomer just with mandatory attributes
-#
-#    When Server is receiving request to createCustomer
-#      | id | lastName  | firstName | age      | isActive | dateOfBirth      |
-#      | 3  | Whittaker |           | 3 months | true     | 25 December 2017 |
-#
-#    Then service is returning response with code 401 and status message "mandatory fields are blank or have invalid format"
+
+  @negative
+  Scenario: Server is receiving response to createCustomer just without one mandatory attribute
+
+    When Server is receiving request to createCustomer
+      | id | lastName  | firstName | age      | isActive | dateOfBirth      |
+      | 3  | Whittaker |           | 3 months | true     | 25 December 2017 |
+
+    Then service is returning response with code 400 and status message "mandatory fields are blank or have invalid format"
 
 
 
