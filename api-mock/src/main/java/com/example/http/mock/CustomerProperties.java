@@ -6,14 +6,14 @@ import java.time.LocalDate;
 
 public class CustomerProperties {
 
-    private int age;
+    private Integer age;
     private boolean active;
 
     @JsonProperty("date_of_birth")
     private LocalDate dateOfBirth;
 
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 

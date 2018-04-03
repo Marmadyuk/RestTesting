@@ -31,7 +31,7 @@ public class MockController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getCustomer(@PathVariable Integer id) {
         Customer customer = mockEngine.getCustomer(id);
-        if (customer == null) {
+        if (customer == null ) {
             return ResponseEntity.status(404).body("no customer with given id");
         }
         return ResponseEntity.ok(customer);

@@ -29,11 +29,18 @@ public class Customer {
     }
 
     public String getFirstName() {
+      if (!firstName.isEmpty() && !firstName.trim().isEmpty()) {
         return firstName;
+      }
+      else return null;
     }
 
     public String getLastName() {
+      if (!lastName.isEmpty() && !lastName.trim().isEmpty()) {
         return lastName;
+      }
+      else return null;
+
     }
 
     public CustomerProperties getProperties() {
