@@ -13,8 +13,8 @@ Feature: createCustomer
   Scenario: Server is receiving response to createCustomer just with mandatory attributes
 
     When Server is receiving request to createCustomer
-      | id | lastName  | firstName | age | active | dateOfBirth | status |
-      | 3  | Whittaker | Jodie     |     |        |             | 200    |
+      | id | lastName  | firstName | age | active | dateOfBirth |
+      | 2  | Whittaker | Jodie     |     |        |             |
 
     Then service is returning response with code 201 and status message "successfully created"
 
@@ -25,7 +25,7 @@ Feature: createCustomer
       | id | lastName  | firstName | age | isActive | dateOfBirth |
       | 3  | Whittaker |           | 3   | true     | 2017-12-25  |
 
-    Then service is returning response with code 400 and status message "mandatory fields are blank or have invalid format"
+    Then service is returning response with code 401 and status message "mandatory fields are blank or have invalid format"
 
 
 

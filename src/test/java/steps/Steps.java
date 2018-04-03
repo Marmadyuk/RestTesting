@@ -1,31 +1,25 @@
-package com.example.resttesting.steps;
+package steps;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static java.time.format.DateTimeFormatter.ISO_DATE;
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static org.hamcrest.Matchers.equalTo;
-
-import com.example.resttesting.CustomerProperties;
+import com.example.resttesting.Customer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import cucumber.api.DataTable;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.internal.assertion.Assertion;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 
-import java.time.LocalDate;
 import java.util.List;
+
+import static io.restassured.RestAssured.given;
 
 public class Steps {
 
@@ -39,22 +33,19 @@ public class Steps {
     request.baseUri("http://localhost:8080/rest/api");
     List<List<String>> data = customerParameters.raw();
 
+    String value = new JsonBuilder()
+        .add("id", "" + data.get(1).get(0) + "")
+        .add("first_name", "" + data.get(1).get(1) + "")
+        .add("last_name", "" + data.get(1).get(2) + "")
+        .add("properties", new JsonBuilder()
+            .add("age", "" + data.get(1).get(3) + "")
+            .add("active", "" + data.get(1).get(4) + "")
+            .add("date_of_birth", "" + data.get(1).get(5) + ""))
+        .toJson();
 
-    CustomerProperties customerProperties = new CustomerProperties(
-        StringUtils.isNotBlank(data.get(1).get(3)) ? Integer.parseInt(data.get(1).get(3)) : null,
-        Boolean.parseBoolean(data.get(1).get(4)),
-        StringUtils.isNotBlank(data.get(1).get(5)) ? LocalDate.parse(data.get(1).get(5), ISO_DATE): null);
-
-    com.example.resttesting.Customer customer = new com.example.resttesting.Customer(
-        Integer.parseInt(data.get(1).get(0)),
-        data.get(1).get(1),
-        data.get(1).get(2),
-        customerProperties);
-
-    Gson gson = new GsonBuilder().serializeNulls().create();
-    String value = gson.toJson(customer);
 
     request.body(value);
+    System.out.println("zzzzzz  " + value);
     request.header("Content-Type", "application/json");
 
     Response response = request.post("/customer");
@@ -62,7 +53,7 @@ public class Steps {
   }
 
 
-  @Then("^service is returning response with code (\\d+) and status message \"([^\"]*)\"$")
+  @Then("^service is returning response with code (\\d+)$")
   public void serviceIsReturningResponseWithCodeAndStatusMessage(int arg1, String arg2) {
     Response response = request.post("/customer");
     int statusCode = response.getStatusCode();
@@ -99,6 +90,12 @@ public class Steps {
 
     int statusCode = response.getStatusCode();
     response.prettyPrint();
+  }
+
+  @And("^the response has an id (\\d+)$")
+  public void theResponseHasAnId(int arg0) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
   }
 
 
