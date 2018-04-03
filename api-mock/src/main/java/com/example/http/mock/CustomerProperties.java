@@ -10,7 +10,7 @@ public class CustomerProperties {
     private boolean active;
 
     @JsonProperty("date_of_birth")
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
 
     public Integer getAge() {
@@ -21,7 +21,7 @@ public class CustomerProperties {
         return active;
     }
 
-    public LocalDate getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -33,7 +33,7 @@ public class CustomerProperties {
         this.active = active;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 }
