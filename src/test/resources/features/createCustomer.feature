@@ -53,12 +53,8 @@ Feature: createCustomer
     When Server is receiving request to createCustomer
       | id | lastName  | firstName | age | isActive | dateOfBirth |
       |    | Whittaker | Jodie     | 3   | true     | 2017-12-25  |
-#  @negative
-#  Scenario: Server is receiving response to createCustomer just without one mandatory attribute
-#
-#    When Server is receiving request to createCustomer
-#      | id | lastName  | firstName | age | isActive | dateOfBirth |
-#      |  sdfsdf  | Whittaker | Jodie     | 3   | true     | 2017-12-25  |
+    Then service is returning response with code 401 and status message "mandatory fields are blank or have invalid format"
+
 
   @negative
   Scenario: Server is receiving request to createCustomer just without all mandatory attribute
@@ -68,3 +64,12 @@ Feature: createCustomer
       |    |          |           | 3   | true     | 2017-12-25  |
 
     Then service is returning response with code 401 and status message "mandatory fields are blank or have invalid format"
+
+
+  
+#  @negative
+#  Scenario: Server is receiving response to createCustomer just without one mandatory attribute
+#
+#    When Server is receiving request to createCustomer
+#      | id | lastName  | firstName | age | isActive | dateOfBirth |
+#      |  sdfsdf  | Whittaker | Jodie     | 3   | true     | 2017-12-25  |
