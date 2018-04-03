@@ -10,13 +10,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import cucumber.api.DataTable;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Rule;
 
 import java.time.LocalDate;
@@ -58,15 +62,19 @@ public class Steps {
 
   @Then("^service is returning response with code (\\d+) and status message \"([^\"]*)\"$")
   public void serviceIsReturningResponseWithCodeAndStatusMessage(int arg1, String arg2) {
+    request.baseUri("http://localhost:8080/rest/api");
     Response response = request.post("/customer");
     int statusCode = response.getStatusCode();
     assertEquals(arg1, statusCode);
-//    String successCode = response.getBody().asString().jsonPath().get("status");
+    String successCode = new JsonPath(response.getBody().asString()).get("status");
+    Integer id = new JsonPath(response.getBody().asString()).get("id");
+
+    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
 //    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
 
 //    assertEquals(creationResponse.status.toString(), arg2);
 
-//        Assert.assertEquals("Correct Success code was returned", arg2, successCode);
+    Assert.assertEquals("Correct Success code was returned", arg2, successCode);
   }
 
 
@@ -77,14 +85,20 @@ public class Steps {
 //    request = given();
   }
 
-  @Then("^the status code is for customer with id (\\d+) returned the status (\\d+)$")
-  public void verify_status_code(int id, int arg) {
+  @Then("^the status code is for customer with id (\\d+) returned the status (\\d+) and status message \"([^\"]*)\"$")
+  public void verify_status_code(int id, int arg, String arg2) {
     request.baseUri("http://localhost:8080/rest/api");
     response = request.when().get("/customer/" + id);
 
     int statusCode = response.getStatusCode();
     assertEquals(arg, statusCode);
+    String successCode = new JsonPath(response.getBody().asString()).get("status");
+    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
+//    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
 
+//    assertEquals(creationResponse.status.toString(), arg2);
+
+    Assert.assertEquals("Correct Success code was returned", StringUtils.isNotBlank(arg2) ? arg2 : null, StringUtils.isNotBlank(successCode) ? successCode : null);
   }
 
   @And("^returned full information of the customer with id (\\d+) and args$")
@@ -107,5 +121,24 @@ public class Steps {
     assertEquals(customer.getProperties().getDateOfBirth(), data.get(1).get(5));
 
 
+  }
+
+
+  @Then("^service is returning response with code (\\d+) and Id (\\d+) status message \"([^\"]*)\"$")
+  public void serviceIsReturningResponseWithCodeAndIdStatusMessage(int arg0, Integer arg1, String arg2) {
+    request.baseUri("http://localhost:8080/rest/api");
+    Response response = request.post("/customer");
+    int statusCode = response.getStatusCode();
+    assertEquals(arg0, statusCode);
+    String successCode = new JsonPath(response.getBody().asString()).get("status");
+    Integer id = new JsonPath(response.getBody().asString()).get("id");
+    Assert.assertEquals("Correct Success code was returned", arg1, id);
+
+    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
+//    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
+
+//    assertEquals(creationResponse.status.toString(), arg2);
+
+    Assert.assertEquals("Correct Success code was returned", arg2, successCode);
   }
 }

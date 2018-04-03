@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.*;
 public class MockController {
 
     public static class CreateResponse {
-        private final int id;
+        private int id;
         private final String status;
 
         public CreateResponse(int id, String status) {
             this.id = id;
             this.status = status;
         }
+      public CreateResponse( String status) {
 
+        this.status = status;
+      }
         public int getId() {
             return id;
         }
@@ -32,7 +35,7 @@ public class MockController {
     public ResponseEntity<?> getCustomer(@PathVariable Integer id) {
         Customer customer = mockEngine.getCustomer(id);
         if (customer == null ) {
-            return ResponseEntity.status(404).body("no customer with given id");
+            return ResponseEntity.status(404).body(new CreateResponse("no customer with given id"));
         }
         return ResponseEntity.ok(customer);
     }
@@ -41,7 +44,7 @@ public class MockController {
     public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
         if (!valid(customer)) {
             return  ResponseEntity.status(401)
-                    .body("mandatory fields are blank or have invalid format");
+                    .body(new CreateResponse("mandatory fields are blank or have invalid format"));
         } else {
             mockEngine.createCustomer(customer);
             return ResponseEntity.status(201)
