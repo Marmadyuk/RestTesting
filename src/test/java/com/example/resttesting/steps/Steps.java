@@ -24,6 +24,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,10 +44,10 @@ public class Steps {
     CustomerProperties customerProperties = new CustomerProperties(
         StringUtils.isNotBlank(data.get(1).get(3)) ? Integer.parseInt(data.get(1).get(3)) : null,
         Boolean.parseBoolean(data.get(1).get(4)),
-        StringUtils.isNotBlank(data.get(1).get(5)) ? LocalDate.parse(data.get(1).get(5), ISO_DATE): null);
+        StringUtils.isNotBlank(data.get(1).get(5)) ? LocalDate.parse(data.get(1).get(5), ISO_DATE) : null);
 
     com.example.resttesting.Customer customer = new com.example.resttesting.Customer(
-        Integer.parseInt(data.get(1).get(0)),
+        StringUtils.isNotBlank(data.get(1).get(0)) ? Integer.parseInt(data.get(1).get(0)) : null,
         data.get(1).get(1),
         data.get(1).get(2),
         customerProperties);
