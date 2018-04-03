@@ -10,6 +10,6 @@ Feature: Getting a customer
 
   @negative
   Scenario: Getting a non existent customer
-    When a user retrieves the user by id 2
-    Then the status code is for customer with id 2 returned the status 404
+    When a user retrieves the user by id 5000
+    Then the status code is for customer with id 5000 returned the status 404
 
