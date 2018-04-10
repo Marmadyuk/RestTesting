@@ -10,6 +10,15 @@ public class Customer {
   public String last_name;
   public CustomerProperties properties;
 
+  public Customer(Integer id, String first_name, String last_name, CustomerProperties properties) {
+    this.id = id;
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.properties = properties;
+
+
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -29,15 +38,6 @@ public class Customer {
 
   public CustomerProperties getProperties() {
     return properties;
-  }
-
-  public Customer(Integer id, String first_name, String last_name, CustomerProperties properties) {
-    this.id = id;
-    this.first_name = first_name;
-    this.last_name = last_name;
-    this.properties = properties;
-
-
   }
 
 }

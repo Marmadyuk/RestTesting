@@ -7,6 +7,10 @@ public class CreationResponse {
 
   public String status;
 
+  public CreationResponse(String status) {
+    this.status = status;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -19,10 +23,6 @@ public class CreationResponse {
   public int hashCode() {
 
     return Objects.hash(status);
-  }
-
-  public CreationResponse( String status) {
-        this.status = status;
   }
 
 }

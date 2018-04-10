@@ -1,9 +1,7 @@
 package com.example.resttesting.steps;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.junit.Assert.assertEquals;
 
-import com.example.resttesting.CreationResponse;
 import com.example.resttesting.Customer;
 import com.example.resttesting.CustomerProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,13 +15,11 @@ import cucumber.api.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class Steps {
@@ -56,7 +52,42 @@ public class Steps {
     request.header("Content-Type", "application/json");
 
     Response response = request.post("/customer");
+  }
 
+  @When("^Server is receiving request to createCustomer with ([^\"]*),([^\"]*),([^\"]*),([^\"]*),([^\"]*) and ([^\"]*)$")
+  public void serverIsReceivingRequestToCreateCustomerOutline(String id,String lastName,String firstName,String age,String isActive, String dateOfBirth) {
+    request.baseUri("http://localhost:8080/rest/api");
+
+    CustomerProperties customerProperties = new CustomerProperties(
+        StringUtils.isNotBlank(age) ? Integer.parseInt(age) : null,
+        Boolean.parseBoolean(isActive),
+        dateOfBirth);
+
+    com.example.resttesting.Customer customer = new com.example.resttesting.Customer(
+        StringUtils.isNotBlank(id) ? Integer.parseInt(id) : null,
+        lastName,
+        firstName,
+        customerProperties);
+
+    Gson gson = new GsonBuilder().serializeNulls().create();
+    String value = gson.toJson(customer);
+
+    request.body(value);
+    request.header("Content-Type", "application/json");
+
+    Response response = request.post("/customer");
+  }
+  @Then("^service is returning response with code ([^\"]*) and Id ([^\"]*) status message ([^\"]*)$")
+  public void serviceIsReturningResponseWithCodeAndStatusMessage(int arg1, String arg2,String message) {
+    request.baseUri("http://localhost:8080/rest/api");
+    Response response = request.post("/customer");
+    int statusCode = response.getStatusCode();
+    assertEquals(arg1, statusCode);
+    String successCode = new JsonPath(response.getBody().asString()).get("status");
+    Integer id = new JsonPath(response.getBody().asString()).get("id");
+
+    System.out.println(successCode);
+    Assert.assertEquals("Correct Success code was returned", message, successCode);
   }
 
 
@@ -69,11 +100,7 @@ public class Steps {
     String successCode = new JsonPath(response.getBody().asString()).get("status");
     Integer id = new JsonPath(response.getBody().asString()).get("id");
 
-    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
-//    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
-
-//    assertEquals(creationResponse.status.toString(), arg2);
-
+    System.out.println(successCode);
     Assert.assertEquals("Correct Success code was returned", arg2, successCode);
   }
 
@@ -82,7 +109,6 @@ public class Steps {
   public void aUserRetrievesTheUserById(Integer id) {
     request.baseUri("http://localhost:8080/rest/api");
     Response response = request.get("/customer/" + id);
-//    request = given();
   }
 
   @Then("^the status code is for customer with id (\\d+) returned the status (\\d+) and status message \"([^\"]*)\"$")
@@ -93,11 +119,7 @@ public class Steps {
     int statusCode = response.getStatusCode();
     assertEquals(arg, statusCode);
     String successCode = new JsonPath(response.getBody().asString()).get("status");
-    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
-//    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
-
-//    assertEquals(creationResponse.status.toString(), arg2);
-
+    System.out.println(successCode);
     Assert.assertEquals("Correct Success code was returned", StringUtils.isNotBlank(arg2) ? arg2 : null, StringUtils.isNotBlank(successCode) ? successCode : null);
   }
 
@@ -114,13 +136,11 @@ public class Steps {
 
 
     assertEquals(customer.id.toString(), data.get(1).get(0));
-    assertEquals(customer.first_name.toString(), data.get(1).get(1));
-    assertEquals(customer.last_name.toString(), data.get(1).get(2));
+    assertEquals(customer.first_name, data.get(1).get(1));
+    assertEquals(customer.last_name, data.get(1).get(2));
     assertEquals(customer.getProperties().getAge().toString(), data.get(1).get(3));
     assertEquals(customer.getProperties().isActive(), Boolean.parseBoolean(data.get(1).get(4)));
     assertEquals(customer.getProperties().getDateOfBirth(), data.get(1).get(5));
-
-
   }
 
 
@@ -133,12 +153,10 @@ public class Steps {
     String successCode = new JsonPath(response.getBody().asString()).get("status");
     Integer id = new JsonPath(response.getBody().asString()).get("id");
     Assert.assertEquals("Correct Success code was returned", arg1, id);
-
-    System.out.println(successCode);/*.asString().jsonPath().get("status");*/
-//    CreationResponse creationResponse =new Gson().fromJson(response.getBody().asString(),CreationResponse.class);
-
-//    assertEquals(creationResponse.status.toString(), arg2);
-
+    System.out.println(successCode);
     Assert.assertEquals("Correct Success code was returned", arg2, successCode);
   }
+
+
+
 }

@@ -2,7 +2,6 @@ package com.example.resttesting;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class CustomerProperties {
@@ -10,6 +9,13 @@ public class CustomerProperties {
   private boolean active;
   @SerializedName("date_of_birth")
   private String dateOfBirth;
+
+  public CustomerProperties(Integer age, boolean active, String dateOfBirth) {
+    this.age = age;
+    this.active = active;
+    this.dateOfBirth = dateOfBirth;
+
+  }
 
   public Integer getAge() {
     return age;
@@ -37,12 +43,5 @@ public class CustomerProperties {
 
   public String getDateOfBirth() {
     return dateOfBirth;
-  }
-
-  public CustomerProperties(Integer age, boolean active, String dateOfBirth) {
-    this.age = age;
-    this.active = active;
-    this.dateOfBirth = dateOfBirth;
-
   }
 }

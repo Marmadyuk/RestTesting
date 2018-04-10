@@ -66,7 +66,7 @@ Feature: createCustomer
     Then service is returning response with code 401 and status message "mandatory fields are blank or have invalid format"
 
 
-  
+
 #  @negative
 #  Scenario: Server is receiving response to createCustomer just without one mandatory attribute
 #

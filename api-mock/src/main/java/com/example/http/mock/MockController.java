@@ -2,58 +2,65 @@ package com.example.http.mock;
 
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/api/customer")
 public class MockController {
 
-    public static class CreateResponse {
-        private int id;
-        private final String status;
+  private MockEngine mockEngine = new MockEngine();
 
-        public CreateResponse(int id, String status) {
-            this.id = id;
-            this.status = status;
-        }
-      public CreateResponse( String status) {
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getCustomer(@PathVariable Integer id) {
+    Customer customer = mockEngine.getCustomer(id);
+    if (customer == null) {
+      return ResponseEntity.status(404).body(new CreateResponse("no customer with given id"));
+    }
+    return ResponseEntity.ok(customer);
+  }
 
-        this.status = status;
-      }
-        public int getId() {
-            return id;
-        }
+  @RequestMapping(method = RequestMethod.POST)
+  public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
+    if (!valid(customer)) {
+      return ResponseEntity.status(401)
+          .body(new CreateResponse("mandatory fields are blank or have invalid format"));
+    } else {
+      mockEngine.createCustomer(customer);
+      return ResponseEntity.status(201)
+          .body(new CreateResponse(customer.getId(), "successfully created"));
+    }
+  }
 
-        public String getStatus() {
-            return status;
-        }
+  private boolean valid(Customer customer) {
+    return customer.getId() != null && customer.getFirstName() != null && customer.getLastName() != null;
+  }
+
+  public static class CreateResponse {
+    private final String status;
+    private int id;
+
+    public CreateResponse(int id, String status) {
+      this.id = id;
+      this.status = status;
     }
 
-    private MockEngine mockEngine = new MockEngine();
+    public CreateResponse(String status) {
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getCustomer(@PathVariable Integer id) {
-        Customer customer = mockEngine.getCustomer(id);
-        if (customer == null ) {
-            return ResponseEntity.status(404).body(new CreateResponse("no customer with given id"));
-        }
-        return ResponseEntity.ok(customer);
+      this.status = status;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
-        if (!valid(customer)) {
-            return  ResponseEntity.status(401)
-                    .body(new CreateResponse("mandatory fields are blank or have invalid format"));
-        } else {
-            mockEngine.createCustomer(customer);
-            return ResponseEntity.status(201)
-                    .body(new CreateResponse(customer.getId(), "successfully created"));
-        }
+    public int getId() {
+      return id;
     }
 
-    private boolean valid(Customer customer) {
-        return customer.getId() != null && customer.getFirstName() != null && customer.getLastName() != null;
+    public String getStatus() {
+      return status;
     }
+  }
 
 }
