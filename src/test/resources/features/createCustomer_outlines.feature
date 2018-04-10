@@ -2,10 +2,8 @@
 Feature: createCustomer
 
   @outline
-  Scenario Outline: Server is request response to createCustomer with <id>,<lastName>,<firstName>,<age>,<isActive> and <dateOfBirth> attributes
+  Scenario Outline: Server is receiving the request to createCustomer
     When Server is receiving request to createCustomer with <id>,<lastName>,<firstName>,<age>,<isActive> and <dateOfBirth>
-
-
     Then service is returning response with code <responseCode> and Id <id> status message <statusMessage>
     Examples:
       | id | lastName  | firstName | age | isActive | dateOfBirth | responseCode | statusMessage                                     |
